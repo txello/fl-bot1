@@ -21,7 +21,7 @@ async def op_step_1(callback:CallbackQuery, state:FSMContext): # Кнопка "�
     
     async with await conn() as session: # Подключаем БД
         lang = await get_lang(session,callback.from_user.id) # Получаем язык из БД
-        await state.set_data({'lang',lang}) # Отправляем язык в машину ожидания
+        await state.set_data({'lang':lang}) # Отправляем язык в машину ожидания
     
     await callback.message.answer(getattr(wd,f"wMath_{lang}").a1) # "Введите первый операнд"
     
@@ -29,7 +29,6 @@ async def op_step_1(callback:CallbackQuery, state:FSMContext): # Кнопка "�
 async def op_step_2(message:Message, state:FSMContext): # Ответ от пользователя в машине ожидания 1
     await state.update_data(step_1=message.text) # Обновляем шаг
     dict = await state.get_data()
-    
     lang = dict['lang'] # Получаем язык из прошлой машины ожидания
     
     await message.answer(getattr(wd,f"wMath_{lang}").a3,reply_markup=mMath.a1) # "Выберите оператор"
@@ -50,8 +49,9 @@ async def op_step_3(callback:CallbackQuery, state:FSMContext): # Ответ от
     
 @router.message(Form.operands3)
 async def op_finally(message:Message, state:FSMContext): # Ответ от машины ожидания 2
+    dict = await state.get_data() # Получаем словарь из машины ожидания 2
     async with await conn() as session: # Подключаем БД
-        lang = lang = dict['lang'] # Получаем язык из прошлой машины ожидания
+        lang = dict['lang'] # Получаем язык из прошлой машины ожидания
         
         await state.update_data(step_3=message.text) # Обновляем шаг
         dict = await state.get_data() # Получаем словарь
