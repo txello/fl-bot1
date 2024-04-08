@@ -1,0 +1,6 @@
+aiogram
+sqlalchemy
+asyncpg
+envserv
+notion-database
+pillow
